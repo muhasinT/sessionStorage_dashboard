@@ -20,9 +20,13 @@ $("#nameError").hide();
 
 $("#emailError").hide();
 
+$("#accountError").hide();
+
 $("#passwordError").hide();
 
 $("#emailloginError").hide();
+
+$("#accountloginError").hide();
 
 $("#passwordloginError").hide();
 
@@ -84,12 +88,41 @@ function validateEmail(){
 
 
 }
+function validateAccount(){
+
+    let signAccount = $("#signupAccount").val();
+    let accntPattern =    /^[0-9]+$/;
+
+    
+    if(signAccount == null || signAccount == ''){
+        $("#accountError").show();
+        $("#accountError").html("Please Enter Your Account");
+        $("#signupAccount").css("border-bottom","solid 2px #FF0000");
+        
+        return false;
+  
+      }else if(signAccount.match(accntPattern)){
+        $("#accountError").hide();
+        $("#signupAccount").css("border-bottom","solid 2px #00FF00");
+    
+        return true;
+    
+      }else{
+        $("#accountError").show();
+        $("#accountError").html("Please Enter Your Valid Account Number");
+        $("#signupAccount").css("border-bottom","solid 2px #FF0000");
+  
+        return false;
+    }
+
+
+}
 
 function validatePassword(){
 
     let signupPass    = $("#signupPaswrd").val();
-    let passwrdPattern   = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
-    ;
+    let passwrdPattern   = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    
 
     if(signupPass == null || signupPass == ''){
         $("#passwordError").show();
@@ -115,6 +148,7 @@ function validatePassword(){
 }
 
 function validateloginEmail(){
+
 
     let loginEmail = $("#loginEmil").val();
     let loginemlPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
@@ -143,11 +177,39 @@ function validateloginEmail(){
 
 }
 
+function validateloginAccount(){
+
+    let loginAccount = $("#loginAccount").val();
+    let loginaccntPattern =    /^[0-9]+$/;
+
+    
+    if(loginAccount == null || loginAccount == ''){
+        $("#accountloginError").show();
+        $("#accountloginError").html("Please Enter Your Account");
+        $("#loginAccount").css("border-bottom","solid 2px #FF0000");
+        
+        return false;
+  
+      }else if(loginAccount.match(loginaccntPattern)){
+        $("#accountloginError").hide();
+        $("#loginAccount").css("border-bottom","solid 2px #00FF00");
+    
+        return true;
+    
+      }else{
+        $("#accountloginError").show();
+        $("#accountloginError").html("Please Enter Your Valid Account Number");
+        $("#loginAccount").css("border-bottom","solid 2px #FF0000");
+  
+        return false;
+    }
+
+
+}
 function validateloginPassword(){
 
     let loginPassword    = $("#loginPass").val();
-    let loginpswdPattern   = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
-    ;
+    let loginpswdPattern   = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
     if(loginPassword == null || loginPassword == ''){
         $("#passwordloginError").show();
@@ -177,13 +239,13 @@ let upBtn = document.getElementById("signupBtn");
 upBtn.addEventListener('click', function(e){
         e.preventDefault()
   
-        if(validateName()=== true && validateEmail() === true && validatePassword() === true){
+        if(validateName()=== true && validateEmail() === true && validateAccount() === true &&  validatePassword() === true){
             $("#signupModal").modal('show');
 
             $("#signUpuser").val("").css("border-bottom","solid 0px");
             $("#signUpeml").val("").css("border-bottom","solid 0px");
+            $("#signupAccount").val("").css("border-bottom","solid 0px");
             $("#signupPaswrd").val("").css("border-bottom","solid 0px");
-
 
 
         }else {
@@ -199,13 +261,19 @@ upBtn.addEventListener('click', function(e){
 
         let signupUseraname = $("#signUpuser").val();
         let signupEmail     =$("#signUpeml").val();
+        let signupAccount   =$("#signupAccount").val();
         let signupPass     = $("#signupPaswrd").val();
+        let signupBal      = 5000;
+                
+
     
-    
-    
+        
        objSignup.email= signupEmail;
        objSignup.userName = signupUseraname;
+       objSignup.account = signupAccount;
        objSignup.pasword = signupPass;
+       objSignup.balance = signupBal;
+        objSignup.transactions = [{credit:[]},{debit:[]}];
     
        let x = JSON.stringify(objSignup);
     
@@ -219,7 +287,7 @@ let inbtn = document.getElementById("loginBtn");
     inbtn.addEventListener('click', function(e){
         e.preventDefault();
 
-        if(validateloginEmail() === true && validateloginPassword() === true){
+        if(validateloginEmail() === true  && validavalidateloginPassword() === true ){
             
     let loginEmail = $("#loginEmil").val();
     let loginPassword = $("#loginPass").val();
@@ -243,7 +311,6 @@ let inbtn = document.getElementById("loginBtn");
     }else{
         $("#loginfldMdl").modal('show');
 
-        console.log("valid email");
     }
 
 
@@ -267,10 +334,16 @@ function signIn(){
 
         let datafrmLocal = localStorage.getItem(loginEmail);
         let objectLogin = JSON.parse(datafrmLocal);
-        console.log(loginEmail);
 
         if(loginPassword ==    objectLogin.pasword){
-            console.log("success");
+
+           let  temporary = "session";
+
+           let tempMail = JSON.stringify(loginEmail)
+
+            localStorage.setItem(temporary,tempMail);
+
+            window.location.replace("./dashBoard/");
         }else{
             console.log("login Failed");
         }
@@ -278,7 +351,6 @@ function signIn(){
     }else{
         console.log("valid email");
     }
-
 
 }
 
